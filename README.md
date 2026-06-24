@@ -1,4 +1,4 @@
-# AlphaRING SARS-CoV-2 Spike Variant Validation
+# Validatimg Sars-CoV-2 Spike Variants using AlphaRING
 
 ![R](https://img.shields.io/badge/R-ROC%20Analysis-blue)
 ![Python](https://img.shields.io/badge/Python-Variant%20Parsing-green)
