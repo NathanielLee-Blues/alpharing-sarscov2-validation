@@ -142,19 +142,19 @@ Running the analysis scripts regenerates the key downstream outputs used to asse
 
 ### Reproduced figures
 
-| Output                                                           | Description                                                                |
-| ---------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `figures/reproduced/roc_curve_reproduced.png`                    | Reproduced ROC curve showing AlphaRING classification performance          |
-| `figures/reproduced/alpharing_score_distribution_reproduced.png` | Reproduced distribution plot of AlphaRING probability scores by true class |
+| Output | Description |
+|---|---|
+| [`figures/reproduced/roc_curve_reproduced.png`](figures/reproduced/roc_curve_reproduced.png) | Reproduced ROC curve showing AlphaRING classification performance |
+| [`figures/reproduced/alpharing_score_distribution_reproduced.png`](figures/reproduced/alpharing_score_distribution_reproduced.png) | Reproduced distribution plot of AlphaRING probability scores by true class |
 
 ### Reproduced tables
 
-| Output                                    | Description                                                                                 |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `results/tables/roc_best_threshold.csv`   | Best ROC-derived classification threshold                                                   |
-| `results/tables/roc_fixed_thresholds.csv` | Thresholds generated for fixed sensitivity and specificity comparisons                      |
-| `results/tables/roc_thresholds_all.csv`   | Full ROC threshold table                                                                    |
-| `results/tables/parsed_variants.csv`      | Parsed variant labels split into wild-type residue, amino-acid position, and mutant residue |
+| Output | Description |
+|---|---|
+| [`results/tables/roc_best_threshold.csv`](results/tables/roc_best_threshold.csv) | Best ROC-derived classification threshold |
+| [`results/tables/roc_fixed_thresholds.csv`](results/tables/roc_fixed_thresholds.csv) | Thresholds generated for fixed sensitivity and specificity comparisons |
+| [`results/tables/roc_thresholds_all.csv`](results/tables/roc_thresholds_all.csv) | Full ROC threshold table |
+| [`results/tables/parsed_variants.csv`](results/tables/parsed_variants.csv) | Parsed variant labels split into wild-type residue, amino-acid position, and mutant residue |
 
 These outputs demonstrate that the repository can regenerate the key evaluation files from the processed AlphaRING dataset rather than only storing static dissertation figures.
 
