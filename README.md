@@ -158,7 +158,7 @@ Running the analysis scripts regenerates the key downstream outputs used to asse
 
 These outputs demonstrate that the repository can regenerate the key evaluation files from the processed AlphaRING dataset rather than only storing static dissertation figures.
 
-```
+---
 
 ## Skills demonstrated
 
