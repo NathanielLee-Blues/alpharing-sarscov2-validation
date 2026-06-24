@@ -78,33 +78,6 @@ This suggests that structure-informed features such as residue interaction degre
 
 ---
 
-## Repository structure
-
-```text
-alpharing-sarscov2-validation/
-├── data/
-│   └── processed/
-│       └── Final_AlphaRING_for_classification.xlsx
-├── scripts/
-│   ├── 01_domain_plot.R
-│   ├── 02_roc_analysis.R
-│   ├── 03_score_distribution_boxplot.R
-│   ├── 04_feature_summary_plots.R
-│   └── variant_parser.py
-├── figures/
-│   ├── original/
-│   └── reproduced/
-├── results/
-│   └── tables/
-├── docs/
-│   ├── PROJECT_SUMMARY.md
-│   ├── REPRODUCIBILITY_NOTES.md
-│   └── BUILD_NOTES.md
-├── environment.yml
-└── README.md
-```
-
----
 
 ## Data
 
