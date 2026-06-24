@@ -1,0 +1,16 @@
+name: alpharing-sarscov2-validation
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python>=3.10
+  - pandas
+  - openpyxl
+  - matplotlib
+  - seaborn
+  - r-base>=4.3
+  - r-tidyverse
+  - r-readxl
+  - r-pROC
+  - r-janitor
+  - r-here
