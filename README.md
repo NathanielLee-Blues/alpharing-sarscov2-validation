@@ -36,6 +36,18 @@ This suggests that structure-informed features such as residue interaction degre
 
 Can AlphaRING v2 accurately distinguish SARS-CoV-2 spike protein variants associated with decreased viral fitness from variants with neutral or increased fitness?
 
+## Interpretation summary
+
+The results suggest that AlphaRING v2 captures useful structure-informed signal when applied to SARS-CoV-2 spike protein missense variants.
+
+After stricter variant curation, the model achieved an ROC AUC of approximately **0.84**, indicating good discrimination between decreased-fitness and non-deleterious variants. The model showed stronger specificity than sensitivity, suggesting it was better at identifying variants unlikely to be deleterious than capturing every decreased-fitness variant.
+
+Feature interpretation showed that predicted protein stability change (`DDG`) and residue interaction network connectivity (`Degree`) contributed most strongly to AlphaRING predictions. This is biologically plausible, as mutations that destabilise the spike protein or affect highly connected residues are more likely to disrupt structure or function.
+
+However, viral fitness is influenced by more than protein structure alone. Immune escape, epistasis, transmission dynamics, and population-level selection may all affect whether a variant becomes successful. For this reason, AlphaRING should be interpreted as a useful structural prediction tool rather than a complete predictor of viral evolutionary success.
+
+For a fuller interpretation of the results and limitations, see [`docs/INTERPRETATION.md`](docs/INTERPRETATION.md).
+
 ## Workflow
 
 ```text
