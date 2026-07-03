@@ -64,13 +64,13 @@ Feature and score distribution visualisation
 SHAP-based interpretation
 ```
 
-## Example outputs
+## Outputs
 
-### Reproduced ROC curve
+### ROC curve
 
 ![Reproduced ROC curve](figures/reproduced/roc_curve_reproduced.png)
 
-### Reproduced AlphaRING score distribution
+### AlphaRING score distribution
 
 ![Reproduced AlphaRING score distribution](figures/reproduced/alpharing_score_distribution_reproduced.png)
 
