@@ -1,16 +1,25 @@
-# Build Notes
+# Build notes
 
-The Python variant parser was tested in this environment and successfully parsed 102/102 variants from `Simplified` into residue-level fields.
+## Purpose of the reconstruction
 
-The R scripts were written by cleaning and restructuring the available `.Rhistory` into standalone scripts. They were not executed in this container because `Rscript` is not installed here. They are intended to run in R/RStudio or the provided conda environment.
+The original dissertation contained a wider research narrative and several exploratory analyses. This repository was built to isolate the parts that can be inspected and rerun from the final AlphaRING output without reproducing the entire dissertation environment.
 
-Recommended local check after cloning:
+## Decisions made during the build
 
-```bash
-conda env create -f environment.yml
-conda activate alpharing-sarscov2-validation
-Rscript scripts/02_roc_analysis.R
-Rscript scripts/03_score_distribution_boxplot.R
-Rscript scripts/04_feature_summary_plots.R
-Rscript scripts/01_domain_plot.R
-```
+- The final processed workbook was retained as the common input to all downstream analyses.
+- Plotting and statistical steps were separated into ordered scripts so that each output has a clear source.
+- Original figures were kept apart from reproduced figures to avoid implying that a static dissertation image had been regenerated.
+- Threshold tables and parsed variant labels were written to machine-readable files rather than reported only in prose.
+- Interpretation and reproducibility notes were separated from the main README so that the landing page remains concise.
+
+## What was not included
+
+The repository does not include AlphaRING model training, raw structural inputs, AlphaFold generation, RING network construction or FoldX execution. It also does not claim that the curated classes form a definitive benchmark of all spike variants.
+
+## Naming and terminology
+
+The term *decreased fitness* is used for the curated viral-fitness class. It should not be replaced with *pathogenic* or *clinically severe*, because those terms describe different biological questions.
+
+## Intended use
+
+The repository is intended to make the analytical reasoning transparent: which data were used, how performance was measured, which features influenced predictions and where the interpretation must remain cautious.

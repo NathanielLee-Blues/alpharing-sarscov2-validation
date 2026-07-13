@@ -1,110 +1,42 @@
 # AlphaRING SARS-CoV-2 Spike Variant Validation
 
-![R](https://img.shields.io/badge/R-ROC%20Analysis-blue)
-![Python](https://img.shields.io/badge/Python-Variant%20Parsing-green)
-![Bioinformatics](https://img.shields.io/badge/Bioinformatics-Structural%20Variant%20Prediction-purple)
-![Status](https://img.shields.io/badge/Status-Reproducible%20Analysis-lightgrey)
-
 ## Project overview
 
-This repository reconstructs and documents the computational analysis from my MSc Genomics dissertation project:
+This project reconstructs the downstream computational analysis from my MSc Genomics dissertation, *Evaluating AlphaRING for Predicting Functional Effects of SARS-CoV-2 Spike Protein Missense Variants*.
 
-**Evaluating AlphaRING for Predicting Functional Effects of SARS-CoV-2 Spike Protein Missense Variants**
+The analysis asks whether AlphaRING v2, a structure-informed variant effect predictor, can distinguish spike protein variants associated with decreased viral fitness from variants with neutral or increased fitness. It combines AlphaRING probability scores with protein stability, residue interaction, structural confidence and positional features, then evaluates the resulting classifications using receiver operating characteristic analysis and SHAP-based feature interpretation.
 
-The project evaluates whether **AlphaRING v2**, a structure-informed variant effect prediction tool, can predict the functional impact of SARS-CoV-2 spike protein missense variants using AlphaRING output scores, structural features, SHAP values, and known viral fitness classifications.
+## Main finding
 
-Rather than simply storing dissertation outputs, this repository presents the analysis as a reproducible bioinformatics portfolio project, with cleaned scripts, processed data, figures, and documentation.
+After stricter curation of the variant labels, AlphaRING achieved an area under the receiver operating characteristic curve of approximately 0.84. This indicates that the model generally ranked decreased-fitness variants as more damaging than the comparison group, although the two classes were not completely separated.
 
-## Headline result
+Predicted stability change (`DDG`) and residue interaction degree (`Degree`) were the strongest average contributors to model predictions. This is mechanistically plausible because destabilising substitutions may impair spike folding or function, while substitutions at highly connected residues may disrupt several local interactions at once.
 
-AlphaRING achieved an ROC AUC of approximately **0.84** when evaluated against curated SARS-CoV-2 spike variant fitness classifications.
-
-This suggests that structure-informed features such as residue interaction degree, predicted stability change, and local structural confidence can provide useful information when evaluating viral missense variants.
-
-## Project at a glance
-
-| Area                   | Description                                                                                      |
-| ---------------------- | ------------------------------------------------------------------------------------------------ |
-| Biological focus       | SARS-CoV-2 spike protein missense variants                                                       |
-| Main tool evaluated    | AlphaRING v2                                                                                     |
-| Data type              | Variant-level structural and prediction features                                                 |
-| Key methods            | ROC/AUC analysis, score distribution analysis, SHAP interpretation                               |
-| Main languages         | R, Python                                                                                        |
-| Portfolio skills shown | Structural bioinformatics, variant interpretation, reproducible analysis, statistical evaluation |
+The result should not be interpreted as a complete prediction of viral evolutionary success. Viral fitness also depends on immune escape, receptor binding, lineage background, epistasis and epidemiological context.
 
 ## Research question
 
-Can AlphaRING v2 accurately distinguish SARS-CoV-2 spike protein variants associated with decreased viral fitness from variants with neutral or increased fitness?
+Can AlphaRING v2 distinguish SARS-CoV-2 spike missense variants associated with decreased viral fitness from variants with neutral or increased fitness?
 
-## Interpretation summary
-
-The results suggest that AlphaRING v2 captures useful structure-informed signal when applied to SARS-CoV-2 spike protein missense variants.
-
-After stricter variant curation, the model achieved an ROC AUC of approximately **0.84**, indicating good discrimination between decreased-fitness and non-deleterious variants. The model showed stronger specificity than sensitivity, suggesting it was better at identifying variants unlikely to be deleterious than capturing every decreased-fitness variant.
-
-Feature interpretation showed that predicted protein stability change (`DDG`) and residue interaction network connectivity (`Degree`) contributed most strongly to AlphaRING predictions. This is biologically plausible, as mutations that destabilise the spike protein or affect highly connected residues are more likely to disrupt structure or function.
-
-However, viral fitness is influenced by more than protein structure alone. Immune escape, epistasis, transmission dynamics, and population-level selection may all affect whether a variant becomes successful. For this reason, AlphaRING should be interpreted as a useful structural prediction tool rather than a complete predictor of viral evolutionary success.
-
-For a fuller interpretation of the results and limitations, see [`docs/INTERPRETATION.md`](docs/INTERPRETATION.md).
-
-## Workflow
+## Analysis workflow
 
 ```text
-Curated SARS-CoV-2 spike variants
+Curated spike missense variants
         ↓
-AlphaRING v2 output scores and features
+AlphaRING scores and structural features
         ↓
 Data cleaning and class labelling
         ↓
-ROC/AUC performance analysis
+ROC/AUC and threshold analysis
         ↓
-Feature and score distribution visualisation
+Score and feature visualisation
         ↓
 SHAP-based interpretation
 ```
 
-## Outputs
+## Scope of the repository
 
-### ROC curve
-
-![Reproduced ROC curve](figures/reproduced/roc_curve_reproduced.png)
-
-### AlphaRING score distribution
-
-![Reproduced AlphaRING score distribution](figures/reproduced/alpharing_score_distribution_reproduced.png)
-
-### Spike protein domain organisation
-
-![Spike protein domain organisation](figures/original/Spike%20protein%20Domain%20organisation.png)
-
-## Repository structure
-
-```text
-alpharing-sarscov2-validation/
-├── data/
-│   └── processed/
-│       └── Final_AlphaRING_for_classification.xlsx
-├── scripts/
-│   ├── 01_domain_plot.R
-│   ├── 02_roc_analysis.R
-│   ├── 03_score_distribution_boxplot.R
-│   ├── 04_feature_summary_plots.R
-│   └── variant_parser.py
-├── figures/
-│   ├── original/
-│   └── reproduced/
-├── results/
-│   └── tables/
-├── docs/
-│   ├── PROJECT_SUMMARY.md
-│   ├── REPRODUCIBILITY_NOTES.md
-│   └── BUILD_NOTES.md
-├── environment.yml
-└── README.md
-```
-
-## Data
+The repository starts from the final processed AlphaRING output used in the dissertation. It reproduces the classification, visualisation and interpretation stages, but it does not rerun AlphaRING v2 from raw protein structures.
 
 The main analysis file is:
 
@@ -112,87 +44,64 @@ The main analysis file is:
 data/processed/Final_AlphaRING_for_classification.xlsx
 ```
 
-Key columns include:
+Important columns include:
 
-| Column         | Description                                                |
-| -------------- | ---------------------------------------------------------- |
-| `Substitution` | AlphaRING-style variant label                              |
-| `Simplified`   | Standard amino-acid substitution label, for example `N61H` |
-| `pLDDT`        | AlphaFold local confidence score                           |
-| `Degree`       | Residue interaction network degree from RING               |
-| `DDG`          | FoldX predicted stability change                           |
-| `RSP`          | Relative substitute position                               |
-| `label`        | AlphaRING prediction label                                 |
-| `Probability`  | AlphaRING probability score                                |
-| `*_SHAP`       | SHAP contribution values for model interpretation          |
-| `true_class`   | Ground truth class used for ROC analysis                   |
+| Column | Meaning |
+|---|---|
+| `Substitution` | AlphaRING-style variant label |
+| `Simplified` | Standard amino-acid substitution, such as `N61H` |
+| `pLDDT` | Local AlphaFold confidence score |
+| `Degree` | Residue interaction network degree from RING |
+| `DDG` | FoldX-predicted change in protein stability |
+| `RSP` | Relative substitute position |
+| `label` | AlphaRING classification label |
+| `Probability` | AlphaRING probability score |
+| `*_SHAP` | Feature-level SHAP contribution values |
+| `true_class` | Curated class used for ROC analysis |
 
-In this dataset, `true_class = 0` represents deleterious or decreased-fitness variants, while `true_class = 1` represents non-deleterious, neutral, or increased-fitness variants.
+Within this dataset, `true_class = 0` represents decreased-fitness variants and `true_class = 1` represents neutral, non-deleterious or increased-fitness variants.
 
-## How to run the analysis
+## Running the analysis
 
-Create the conda environment:
+Create and activate the Conda environment:
 
 ```bash
 conda env create -f environment.yml
 conda activate alpharing-sarscov2-validation
 ```
 
-Run the scripts from the repository root:
+Run the analysis from the repository root:
 
 ```bash
 Rscript scripts/01_domain_plot.R
 Rscript scripts/02_roc_analysis.R
 Rscript scripts/03_score_distribution_boxplot.R
 Rscript scripts/04_feature_summary_plots.R
-python scripts/variant_parser.py data/processed/Final_AlphaRING_for_classification.xlsx results/tables/parsed_variants.csv
+python scripts/variant_parser.py \
+  data/processed/Final_AlphaRING_for_classification.xlsx \
+  results/tables/parsed_variants.csv
 ```
 
-## Reproduced analysis outputs
-
-Running the analysis scripts regenerates the key downstream outputs used to assess AlphaRING performance.
-
-### Reproduced figures
+## Main outputs
 
 | Output | Description |
 |---|---|
-| [`figures/reproduced/roc_curve_reproduced.png`](figures/reproduced/roc_curve_reproduced.png) | Reproduced ROC curve showing AlphaRING classification performance |
-| [`figures/reproduced/alpharing_score_distribution_reproduced.png`](figures/reproduced/alpharing_score_distribution_reproduced.png) | Reproduced distribution plot of AlphaRING probability scores by true class |
+| `figures/reproduced/roc_curve_reproduced.png` | ROC curve for the curated classification analysis |
+| `figures/reproduced/alpharing_score_distribution_reproduced.png` | AlphaRING score distributions by curated class |
+| `results/tables/roc_best_threshold.csv` | Best threshold identified from the ROC analysis |
+| `results/tables/roc_fixed_thresholds.csv` | Thresholds at fixed sensitivity and specificity values |
+| `results/tables/roc_thresholds_all.csv` | Full threshold table |
+| `results/tables/parsed_variants.csv` | Parsed amino-acid substitutions |
 
-### Reproduced tables
+## Documentation
 
-| Output | Description |
-|---|---|
-| [`results/tables/roc_best_threshold.csv`](results/tables/roc_best_threshold.csv) | Best ROC-derived classification threshold |
-| [`results/tables/roc_fixed_thresholds.csv`](results/tables/roc_fixed_thresholds.csv) | Thresholds generated for fixed sensitivity and specificity comparisons |
-| [`results/tables/roc_thresholds_all.csv`](results/tables/roc_thresholds_all.csv) | Full ROC threshold table |
-| [`results/tables/parsed_variants.csv`](results/tables/parsed_variants.csv) | Parsed variant labels split into wild-type residue, amino-acid position, and mutant residue |
+- [Project summary](docs/PROJECT_SUMMARY.md)
+- [Interpretation](docs/INTERPRETATION.md)
+- [Reproducibility notes](docs/REPRODUCIBILITY_NOTES.md)
+- [Build notes](docs/BUILD_NOTES.md)
 
-These outputs demonstrate that the repository can regenerate the key evaluation files from the processed AlphaRING dataset rather than only storing static dissertation figures.
+## Limitations
 
----
+The final dataset is a curated dissertation dataset rather than a complete benchmark of spike variation. The term *decreased fitness* refers to viral fitness and not to pathogenicity in an infected person. In addition, the analysis tests a tool originally benchmarked using human missense variants in a viral setting, where the relationship between local structural effects and observed fitness may differ.
 
-## Skills demonstrated
-
-This project demonstrates:
-
-* structural bioinformatics
-* SARS-CoV-2 spike protein variant interpretation
-* variant effect prediction
-* ROC/AUC analysis in R
-* biological data cleaning and feature extraction
-* SHAP-based model interpretation
-* Python scripting for variant parsing
-* reproducible GitHub project organisation
-
-## Notes on reproducibility
-
-This repository reconstructs the downstream analysis from the final AlphaRING output dataset.
-
-It does not rerun AlphaRING v2 itself. Instead, it focuses on making the final classification, visualisation, and statistical evaluation steps transparent and reproducible.
-
-## Project context
-
-This project was developed from an MSc Genomics dissertation investigating whether AlphaRING v2 could be applied beyond human missense variant prediction and used to evaluate SARS-CoV-2 spike protein variants.
-
-The repository has been structured as a bioinformatics portfolio project to demonstrate computational genomics, structural variant interpretation, and reproducible analysis practices.
+AlphaRING therefore provides one source of structural evidence. Experimental, epidemiological and evolutionary evidence remains necessary when interpreting real-world SARS-CoV-2 variants.

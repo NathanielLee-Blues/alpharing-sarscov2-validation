@@ -2,65 +2,57 @@
 
 ## Summary of findings
 
-This project evaluates whether AlphaRING v2 can predict the functional effects of SARS-CoV-2 spike protein missense variants using structure-informed features and known viral fitness classifications.
+The initial analyses were sensitive to how spike variants were labelled and grouped. After applying stricter curation criteria, the final dataset produced an ROC AUC of approximately 0.84. AlphaRING scores therefore contained a meaningful signal for separating decreased-fitness variants from neutral, non-deleterious or increased-fitness variants in this dataset.
 
-The initial broader variant set produced weak classification performance, with an AUC of approximately 0.54. This suggested that the first set of “gold standard” variants was too permissive and likely contained uncertain or inconsistently classified examples.
-
-After applying stricter curation criteria, the final higher-confidence variant set produced substantially stronger performance, with an ROC AUC of approximately **0.84**. This indicates that AlphaRING scores contained meaningful signal for distinguishing decreased-fitness spike variants from non-deleterious or increased-fitness variants.
+An AUC of 0.84 means that, when one variant is drawn from each class, the model will usually assign the more damaging score to the decreased-fitness variant. It does not mean that 84% of individual variants are classified correctly, and performance at any chosen threshold will depend on the balance between sensitivity and specificity.
 
 ## Biological interpretation
 
-The SARS-CoV-2 spike protein is central to viral entry, ACE2 receptor binding, membrane fusion, immune recognition, and viral transmissibility. Missense variants in this protein can therefore affect viral fitness through changes in protein stability, structural integrity, receptor interaction, immune escape, or compatibility with other mutations.
+The spike protein contributes to ACE2 binding, membrane fusion, immune recognition and viral transmission. Missense substitutions can alter these functions through several routes. Some affect folding or stability; others change local residue interactions, receptor contact surfaces or antibody epitopes. Fitness may also depend on the wider lineage background, because one substitution can compensate for or intensify the effect of another.
 
-AlphaRING v2 is useful in this context because it incorporates structural information rather than relying only on sequence conservation. The model combines AlphaFold-derived structural confidence, residue interaction network features from RING, FoldX-predicted stability change, and relative substitute position. These features provide a mechanistic view of how an amino-acid substitution may affect the protein.
+AlphaRING is informative because it combines several structural signals rather than treating sequence conservation as the only source of evidence. This provides a plausible link between a prediction and the physical context of the altered residue.
 
-The observed performance suggests that structure-informed prediction can contribute to viral variant interpretation, particularly when assessing variants likely to disrupt spike protein structure or function.
+## Sensitivity and specificity
 
-## ROC/AUC interpretation
+The final analysis showed stronger specificity than sensitivity. AlphaRING was therefore better at identifying variants that were unlikely to be associated with decreased fitness than at recovering every decreased-fitness variant.
 
-The ROC AUC of approximately **0.84** indicates good discriminatory performance. In practical terms, AlphaRING usually ranked decreased-fitness variants as more damaging than non-deleterious variants.
+This asymmetry is biologically reasonable. A structurally tolerated substitution is less likely to impair spike function, whereas a decrease in viral fitness may arise from mechanisms that are not represented by the model, including immune context, altered processing, lineage-specific epistasis or population-level selection.
 
-The sensitivity and specificity values suggest that AlphaRING performed better at correctly identifying neutral or non-deleterious variants than capturing all decreased-fitness variants. This implies that the model may be more reliable when identifying variants that are structurally tolerated than when identifying every variant that may reduce viral fitness.
+## Feature-level interpretation
 
-This is biologically reasonable because viral fitness is affected by factors beyond local protein structure. A mutation may increase or decrease fitness through immune escape, epidemiological context, lineage background, or epistatic interactions with other mutations.
+### Predicted stability change (`DDG`)
 
-## Feature interpretation
+`DDG` was one of the strongest contributors to AlphaRING predictions. A strongly destabilising substitution may reduce the proportion of correctly folded spike protein, disturb local conformation or impair the transitions required for membrane fusion. Its importance supports protein stability as a central component of deleteriousness prediction.
 
-The feature-level interpretation showed that `DDG` and `Degree` were the most influential contributors to AlphaRING predictions.
+### Residue interaction degree (`Degree`)
 
-`DDG` represents predicted change in protein stability. Variants with strongly destabilising effects are more likely to interfere with folding, structural integrity, or spike protein function. The importance of `DDG` therefore supports the idea that protein stability is a major factor in predicting deleterious spike variants.
+`Degree` measures how connected a residue is within the local interaction network. A substitution at a highly connected site may affect several contacts simultaneously, which increases the chance of disrupting structural integrity or function. The contribution of `Degree` indicates that local network context adds information beyond the identity of the substituted amino acid.
 
-`Degree` represents residue interaction network connectivity. A mutation at a highly connected residue may disrupt multiple local interactions, making it more likely to affect protein structure or function. The importance of `Degree` suggests that residue interaction context is also important for variant interpretation.
+### Structural confidence and position
 
-`pLDDT` and `RSP` contributed less strongly on average. `pLDDT` provides local AlphaFold structural confidence, while `RSP` captures relative position within the protein. These features may still influence individual predictions, but their effects appear more context-dependent.
+`pLDDT` and `RSP` were weaker on average, although they may still be important for individual variants. Low local confidence can reduce certainty in structure-derived features, while position may act as a broad proxy for domain context. Their effects are likely to depend more heavily on the specific residue and surrounding region.
 
-## Interpretation of score distributions
+## Score distributions
 
-The AlphaRING score distributions showed separation between decreased-fitness and non-deleterious variants, but the classes were not perfectly separated. This is expected in biological variant effect prediction.
+The score distributions overlapped between classes. This is expected because biological variant effects are continuous and context-dependent rather than divided into two perfectly distinct groups. A variant can appear structurally damaging yet be tolerated, while another can have a modest local structural effect but a substantial influence on receptor binding or immune escape.
 
-Some variants may appear structurally damaging but still be tolerated by the virus. Others may have modest structural effects but important biological consequences through immune escape, receptor binding, or lineage-specific interactions.
+AlphaRING scores should therefore be interpreted as graded structural evidence rather than definitive labels.
 
-Therefore, AlphaRING scores should be interpreted as structural evidence, not as complete evidence of viral evolutionary behaviour.
+## Relationship to other predictors
 
-## Comparison with existing approaches
+Sequence-based predictors can identify substitutions at evolutionarily constrained positions, but their transfer to viral proteins is not always straightforward. AlphaRING adds a different form of evidence by representing stability, interaction connectivity and structural confidence. This improves interpretability because a high-impact prediction can be traced to specific features.
 
-Compared with sequence-based tools such as CADD, AlphaRING has the advantage of incorporating protein structural information. This makes its predictions more interpretable, because the model can highlight whether stability, residue connectivity, local structural confidence, or position contributed to the prediction.
-
-This is especially useful for non-human proteins and viral genomes, where human-trained or conservation-based predictors may not always transfer cleanly.
+The approaches are complementary. Agreement between sequence, structure, experimental and epidemiological evidence would provide stronger support than any single score alone.
 
 ## Limitations
 
-This project has several important limitations:
+- The repository reproduces the downstream analysis from final AlphaRING outputs rather than rerunning the model from raw structures.
+- The curated dataset is not a complete or independent benchmark of SARS-CoV-2 spike variation.
+- Fitness labels may depend on lineage background, experimental system and the time at which a variant was assessed.
+- AlphaRING was originally benchmarked on human missense variation, so its calibration may differ in a viral protein.
+- The binary classification simplifies effects that may be continuous, uncertain or context-dependent.
+- Decreased viral fitness is not equivalent to reduced or increased clinical severity in humans.
 
-* The repository reconstructs downstream analysis from final AlphaRING outputs rather than rerunning AlphaRING v2 from raw protein inputs.
-* The term “deleterious” refers to decreased viral fitness, not clinical pathogenicity in humans.
-* Viral fitness is affected by structural, immunological, epidemiological, and evolutionary factors.
-* Some variants may be misclassified because fitness effects can depend on lineage background or interactions with other mutations.
-* The final dataset was curated for dissertation analysis and should not be treated as a complete benchmark of SARS-CoV-2 spike variation.
-* The analysis tests AlphaRING in a viral context, while the tool was originally benchmarked against human missense variants.
+## Conclusion
 
-## Overall conclusion
-
-This project supports the idea that AlphaRING v2 can provide useful structure-informed predictions for SARS-CoV-2 spike protein missense variants. The improved performance after stricter dataset curation suggests that high-quality variant labels are essential when benchmarking variant effect predictors.
-
-Overall, the results indicate that structural bioinformatics can contribute meaningfully to viral variant interpretation, but should be combined with experimental, epidemiological, and evolutionary evidence when assessing real-world viral fitness.
+The final analysis indicates that AlphaRING v2 can provide useful structure-informed evidence for SARS-CoV-2 spike missense variants. The improvement after stricter curation also shows that benchmark quality is central to model evaluation. Structural predictions are most useful when they are combined with experimental, epidemiological and evolutionary evidence rather than treated as a complete account of viral fitness.
